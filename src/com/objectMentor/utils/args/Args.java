@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.Set;
 
 import static com.objectMentor.utils.args.ErrorCode.INVALID_ARGUMENT_FORMAT;
-import static com.objectMentor.utils.args.ErrorCode.INVALID_ARGUMENT_Name;
+import static com.objectMentor.utils.args.ErrorCode.INVALID_ARGUMENT_NAME;
 import static com.objectMentor.utils.args.ErrorCode.UNEXPECTED_ARGUMENT;
 
 public class Args {
@@ -52,7 +52,7 @@ public class Args {
 
     private void validateSchemaElementId(char elementId) throws ArgsException {
         if (!Character.isLetter(elementId))
-            throw new ArgsException(INVALID_ARGUMENT_Name, elementId, null);
+            throw new ArgsException(INVALID_ARGUMENT_NAME, elementId, null);
     }
 
     private void parseArgumentStrings(List<String> argsList) throws ArgsException {
