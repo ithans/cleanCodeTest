@@ -1,10 +1,10 @@
-package com.objectMentor.utils.args;
+package clean.args;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-import static com.objectMentor.utils.args.ErrorCode.INVALID_INTEGER;
-import static com.objectMentor.utils.args.ErrorCode.MISSING_INTEGER;
+import static clean.args.ErrorCode.INVALID_INTEGER;
+import static clean.args.ErrorCode.MISSING_INTEGER;
 
 public class IntegerArgumentMarShaler implements ArgumentMarshaler {
     private int intValue = 0;

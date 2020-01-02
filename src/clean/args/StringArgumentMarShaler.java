@@ -1,9 +1,7 @@
-package com.objectMentor.utils.args;
+package clean.args;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
-
-import static com.objectMentor.utils.args.ErrorCode.MISSING_STRING;
 
 public class StringArgumentMarShaler implements ArgumentMarshaler {
     private String StringValue ="";
@@ -12,7 +10,7 @@ public class StringArgumentMarShaler implements ArgumentMarshaler {
         try{
             this.StringValue = currentArgument.next();
         } catch(NoSuchElementException e) {
-            throw new ArgsException(MISSING_STRING);
+            throw new ArgsException(ErrorCode.MISSING_STRING);
         }
     }
 

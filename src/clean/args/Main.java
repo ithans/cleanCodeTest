@@ -1,8 +1,4 @@
-package com.objectMentor.utils.args;
-
-import com.objectMentor.utils.args.Args;
-import com.objectMentor.utils.args.ArgsException;
-import sun.util.logging.resources.logging;
+package clean.args;
 
 public class Main {
     public static void main(String[] args) {

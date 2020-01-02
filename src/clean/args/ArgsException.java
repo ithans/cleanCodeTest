@@ -1,11 +1,9 @@
-package com.objectMentor.utils.args;
-
-import static com.objectMentor.utils.args.ErrorCode.Ok;
+package clean.args;
 
 public class ArgsException extends Exception {
     private char errorArgumentId ='\0';
     private String errorParameter = null;
-    private ErrorCode errorCode = Ok;
+    private ErrorCode errorCode = ErrorCode.Ok;
 
     public ArgsException(){
     }

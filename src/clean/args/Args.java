@@ -1,4 +1,4 @@
-package com.objectMentor.utils.args;
+package clean.args;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -7,10 +7,6 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
-
-import static com.objectMentor.utils.args.ErrorCode.INVALID_ARGUMENT_FORMAT;
-import static com.objectMentor.utils.args.ErrorCode.INVALID_ARGUMENT_NAME;
-import static com.objectMentor.utils.args.ErrorCode.UNEXPECTED_ARGUMENT;
 
 public class Args {
     private Map<Character, ArgumentMarshaler> marshalers;
@@ -46,13 +42,13 @@ public class Args {
             marshalers.put(elementId, new IntegerArgumentMarShaler());
         }
         else {
-            throw new ArgsException(INVALID_ARGUMENT_FORMAT, elementId, elementTail);
+            throw new ArgsException(ErrorCode.INVALID_ARGUMENT_FORMAT, elementId, elementTail);
         }
     }
 
     private void validateSchemaElementId(char elementId) throws ArgsException {
         if (!Character.isLetter(elementId))
-            throw new ArgsException(INVALID_ARGUMENT_NAME, elementId, null);
+            throw new ArgsException(ErrorCode.INVALID_ARGUMENT_NAME, elementId, null);
     }
 
     private void parseArgumentStrings(List<String> argsList) throws ArgsException {
@@ -76,7 +72,7 @@ public class Args {
     private void parseArgumentCharacter(char argchar) throws ArgsException {
         ArgumentMarshaler m = marshalers.get(argchar);
         if (m == null) {
-            throw new ArgsException(UNEXPECTED_ARGUMENT, argchar, null);
+            throw new ArgsException(ErrorCode.UNEXPECTED_ARGUMENT, argchar, null);
         }else {
             argsFound.add(argchar);
             try{

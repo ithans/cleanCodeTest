@@ -1,4 +1,4 @@
-package com.objectMentor.utils.args;
+package clean.args;
 
 import java.util.Iterator;
 
