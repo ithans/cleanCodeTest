@@ -5,9 +5,9 @@ import java.util.Iterator;
 public class BooleanArgumentMarShaler implements ArgumentMarshaler{
     private boolean booleanValue =false;
 
-    public static boolean getValue(ArgumentMarshaler argumentMarshaler) {
-        if (argumentMarshaler != null && argumentMarshaler instanceof  BooleanArgumentMarShaler)
-            return ((BooleanArgumentMarShaler)argumentMarshaler).booleanValue;
+    public static boolean getValue(ArgumentMarshaler am) {
+        if (am != null && am instanceof  BooleanArgumentMarShaler)
+            return ((BooleanArgumentMarShaler)am).booleanValue;
         else return false;
     }
 

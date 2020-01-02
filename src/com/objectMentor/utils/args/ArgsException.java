@@ -3,20 +3,22 @@ package com.objectMentor.utils.args;
 import static com.objectMentor.utils.args.ErrorCode.Ok;
 
 public class ArgsException extends Exception {
-    private ErrorCode errorCode = Ok;
     private char errorArgumentId ='\0';
     private String errorParameter = null;
+    private ErrorCode errorCode = Ok;
 
+    public ArgsException(){
+    }
+    public ArgsException(String message){
+        super(message);
+    }
+    public ArgsException(ErrorCode errorCode){
+        this.errorCode = errorCode;
+    }
     public ArgsException(ErrorCode errorCode, char errorElementId, String errorParameter) {
         this.errorCode = errorCode;
         this.errorArgumentId = errorElementId;
         this.errorParameter = errorParameter;
-    }
-    public ArgsException(){
-
-    }
-    public ArgsException(ErrorCode errorCode){
-        this.errorCode = errorCode;
     }
 
     public ArgsException(ErrorCode errorCode, String errorParameter) {
@@ -58,6 +60,8 @@ public class ArgsException extends Exception {
                 return String.format("Could not find string parameter for -%c.",errorArgumentId);
             case INVALID_INTEGER:
                 return String.format("Argument -%c expects an integer but was '%s'.",errorArgumentId,errorParameter);
+            case MISSING_INTEGER:
+                return String.format("Could not find integer parameter for -%c.",errorArgumentId);
             case INVALID_ARGUMENT_FORMAT:
                 return String.format("'%s' is not a valid argument format.", errorParameter);
         }

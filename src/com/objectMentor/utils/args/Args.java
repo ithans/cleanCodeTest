@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Set;
 
 import static com.objectMentor.utils.args.ErrorCode.INVALID_ARGUMENT_FORMAT;
+import static com.objectMentor.utils.args.ErrorCode.INVALID_ARGUMENT_Name;
 import static com.objectMentor.utils.args.ErrorCode.UNEXPECTED_ARGUMENT;
 
 public class Args {
@@ -26,8 +27,36 @@ public class Args {
         parseArgumentStrings(Arrays.asList(args));
     }
 
-    private void parseArgumentStrings(List<String> argList) throws ArgsException {
-        for (currentArgument = argList.listIterator(); currentArgument.hasNext(); ) {
+    private void parseSchema(String schema) throws ArgsException {
+        for (String element : schema.split(",")) {
+            if (element.length() > 0)
+                parseSchemaElement(element.trim());
+        }
+    }
+
+    private void parseSchemaElement(String element) throws ArgsException {
+        char elementId = element.charAt(0);
+        String elementTail = element.substring(1);
+        validateSchemaElementId(elementId);
+        if (elementTail.length() == 0) {
+            marshalers.put(elementId, new BooleanArgumentMarShaler());
+        } else if (elementTail.equals("*")) {
+            marshalers.put(elementId, new StringArgumentMarShaler());
+        } else if (elementTail.equals("#")) {
+            marshalers.put(elementId, new IntegerArgumentMarShaler());
+        }
+        else {
+            throw new ArgsException(INVALID_ARGUMENT_FORMAT, elementId, elementTail);
+        }
+    }
+
+    private void validateSchemaElementId(char elementId) throws ArgsException {
+        if (!Character.isLetter(elementId))
+            throw new ArgsException(INVALID_ARGUMENT_Name, elementId, null);
+    }
+
+    private void parseArgumentStrings(List<String> argsList) throws ArgsException {
+        for (currentArgument = argsList.listIterator(); currentArgument.hasNext(); ) {
             String argString = currentArgument.next();
             if (argString.startsWith("-")) {
                 parseArgumentCharacters(argString.substring(1));
@@ -45,13 +74,13 @@ public class Args {
     }
 
     private void parseArgumentCharacter(char argchar) throws ArgsException {
-        ArgumentMarshaler argumentMarshaler = marshalers.get(argchar);
-        if (argumentMarshaler == null) {
+        ArgumentMarshaler m = marshalers.get(argchar);
+        if (m == null) {
             throw new ArgsException(UNEXPECTED_ARGUMENT, argchar, null);
         }else {
             argsFound.add(argchar);
             try{
-                argumentMarshaler.set(currentArgument);
+                m.set(currentArgument);
             } catch (ArgsException e){
                 e.setErrorArgumentId(argchar);
                 throw e;
@@ -77,38 +106,5 @@ public class Args {
 
     public int getInt(char arg){
         return IntegerArgumentMarShaler.getValue(marshalers.get(arg));
-    }
-
-    private void parseSchema(String schema) throws ArgsException {
-        for (String element : schema.split(",")) {
-            if (element.length() > 0)
-                parseSchemaElement(element.trim());
-        }
-    }
-
-    private void parseSchemaElement(String element) throws ArgsException {
-        char elementId = element.charAt(0);
-        String elementTail = element.substring(1);
-        validateSchemaElementId(elementId);
-        if (elementTail.length() == 0) {
-            marshalers.put(elementId, new BooleanArgumentMarShaler());
-        } else if (elementTail.equals("*")) {
-            marshalers.put(elementId, new StringArgumentMarShaler());
-        } else if (elementTail.equals("#")) {
-            marshalers.put(elementId, new IntegerArgumentMarShaler());
-        }
-//        else if (elementTail.equals("##")) {
-//            marshalers.put(elementId, new DoubleArgumentMarShaler());
-//        } else if (elementTail.equals("[*]")) {
-//            marshalers.put(elementId, new StringArrayArgumentMarShaler());
-//        }
-        else {
-            throw new ArgsException(INVALID_ARGUMENT_FORMAT, elementId, elementTail);
-        }
-    }
-
-    private void validateSchemaElementId(char elementId) throws ArgsException {
-        if (!Character.isLetter(elementId))
-            throw new ArgsException(INVALID_ARGUMENT_FORMAT, elementId, null);
     }
 }

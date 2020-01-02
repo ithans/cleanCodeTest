@@ -16,9 +16,9 @@ public class StringArgumentMarShaler implements ArgumentMarshaler {
         }
     }
 
-    public static String getValue(ArgumentMarshaler argumentMarshaler) {
-        if (argumentMarshaler != null && argumentMarshaler instanceof StringArgumentMarShaler){
-            return ((StringArgumentMarShaler) argumentMarshaler).StringValue;
+    public static String getValue(ArgumentMarshaler am) {
+        if (am != null && am instanceof StringArgumentMarShaler){
+            return ((StringArgumentMarShaler) am).StringValue;
         }else{
             return "";
         }
