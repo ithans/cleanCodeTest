@@ -235,27 +235,27 @@ public class Args {
         return s == null ? "" : s;
     }
 
-    public String getString(char arg){
+    public String getString(char arg) {
         return blankIfNull(stringArgs.get(arg));
     }
 
-    public int getInt(char arg){
+    public int getInt(char arg) {
         return zeroIfNull(intArgs.get(arg));
     }
 
-    public boolean getBoolean(char arg){
+    public boolean getBoolean(char arg) {
         return falseIfNull(booleanArgs.get(arg));
     }
 
-    public boolean has(char arg){
+    public boolean has(char arg) {
         return argFound.contains(arg);
     }
 
-    public boolean isValid(){
+    public boolean isValid() {
         return valid;
     }
 
-    private class ArgsException extends Exception{
+    private class ArgsException extends Exception {
 
     }
 }
