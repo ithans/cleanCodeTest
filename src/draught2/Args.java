@@ -8,12 +8,13 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
+
 public class Args {
     private String schema;
     private String[] args;
     private boolean valid = true;
     private Set<Character> unexpectedArguments = new TreeSet<>();
-    private Map<Character, Boolean> booleanArgs = new HashMap<>();
+    private Map<Character, ArgumentMarshaler> booleanArgs = new HashMap<>();
     private Map<Character, String> stringArgs = new HashMap<>();
     private Set<Character> argFound = new HashSet<>();
     private int numOfArgument;
@@ -97,7 +98,7 @@ public class Args {
     }
 
     private void setBooleanArg(char argChar, boolean value) {
-        booleanArgs.put(argChar, value);
+        booleanArgs.get(argChar).setBoolean(value);
     }
 
     private boolean isBoolean(char argChar) {
@@ -138,19 +139,19 @@ public class Args {
     }
 
     public boolean getBoolean(char arg) {
-        return falseIfNull(booleanArgs.get(arg));
+        return falseIfNull(booleanArgs.get(arg).getBoolean());
     }
 
     private boolean falseIfNull(Boolean b) {
         return b == null ? false : b;
     }
 
-    public String getString(char arg){
+    public String getString(char arg) {
         return blankIfNull(stringArgs.get(arg));
     }
 
     private String blankIfNull(String s) {
-        return s== null?"":s;
+        return s == null ? "" : s;
     }
 
     private boolean parseSchema() throws ParseException {
@@ -192,14 +193,41 @@ public class Args {
     }
 
     private void parseBooleanSchemaElement(char element) {
-        booleanArgs.put(element, false);
+        booleanArgs.put(element, new BooleanArgumentMarshaler());
     }
 
-    public boolean has(char arg){
+    public boolean has(char arg) {
         return argFound.contains(arg);
     }
 
-    public boolean isValid(){
+    public boolean isValid() {
         return valid;
     }
+
 }
+
+
+ class ArgumentMarshaler {
+    private boolean booleanValue = false;
+
+    public void setBoolean(boolean value) {
+        booleanValue = value;
+    }
+
+    public boolean getBoolean() {
+        return booleanValue;
+    }
+}
+class BooleanArgumentMarshaler extends ArgumentMarshaler{
+
+}
+
+class StringArgumentMarshaler extends ArgumentMarshaler{
+
+}
+
+class IntegerArgumentMarshaler extends ArgumentMarshaler{
+
+}
+
+
