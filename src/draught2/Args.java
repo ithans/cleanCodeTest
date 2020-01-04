@@ -1,6 +1,8 @@
 package draught2;
 
 
+import com.sun.org.apache.xpath.internal.Arg;
+
 import java.text.ParseException;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -139,11 +141,8 @@ public class Args {
     }
 
     public boolean getBoolean(char arg) {
-        return falseIfNull(booleanArgs.get(arg).getBoolean());
-    }
-
-    private boolean falseIfNull(Boolean b) {
-        return b == null ? false : b;
+        Args.ArgumentMarshaler am = booleanArgs.get(arg);
+        return am != null && am.getBoolean();
     }
 
     public String getString(char arg) {
@@ -204,30 +203,36 @@ public class Args {
         return valid;
     }
 
-}
 
+    class ArgumentMarshaler {
+        private boolean booleanValue = false;
 
- class ArgumentMarshaler {
-    private boolean booleanValue = false;
+        public void setBoolean(boolean value) {
+            booleanValue = value;
+        }
 
-    public void setBoolean(boolean value) {
-        booleanValue = value;
+        public boolean getBoolean() {
+            return booleanValue;
+        }
     }
 
-    public boolean getBoolean() {
-        return booleanValue;
+    class BooleanArgumentMarshaler extends ArgumentMarshaler {
+
     }
-}
-class BooleanArgumentMarshaler extends ArgumentMarshaler{
+
+    class StringArgumentMarshaler extends ArgumentMarshaler {
+
+    }
+
+    class IntegerArgumentMarshaler extends ArgumentMarshaler {
+
+    }
+
 
 }
 
-class StringArgumentMarshaler extends ArgumentMarshaler{
 
-}
 
-class IntegerArgumentMarshaler extends ArgumentMarshaler{
 
-}
 
 
