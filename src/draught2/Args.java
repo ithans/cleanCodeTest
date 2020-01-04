@@ -1,7 +1,6 @@
 package draught2;
 
-
-import com.sun.org.apache.xpath.internal.Arg;
+import clean.args.ArgsException;
 
 import java.text.ParseException;
 import java.util.HashMap;
@@ -17,7 +16,7 @@ public class Args {
     private boolean valid = true;
     private Set<Character> unexpectedArguments = new TreeSet<>();
     private Map<Character, ArgumentMarshaler> booleanArgs = new HashMap<>();
-    private Map<Character, String> stringArgs = new HashMap<>();
+    private Map<Character, ArgumentMarshaler> stringArgs = new HashMap<>();
     private Set<Character> argFound = new HashSet<>();
     private int numOfArgument;
     private int currentArgument;
@@ -87,7 +86,7 @@ public class Args {
     private void setStringArg(char argChar, String s) {
         currentArgument++;
         try {
-            stringArgs.put(argChar, args[currentArgument]);
+            stringArgs.get(argChar).setString(args[currentArgument]);
         } catch (ArrayIndexOutOfBoundsException e) {
             valid = false;
             errorArguement = argChar;
@@ -146,7 +145,8 @@ public class Args {
     }
 
     public String getString(char arg) {
-        return blankIfNull(stringArgs.get(arg));
+        Args.ArgumentMarshaler am = stringArgs.get(arg);
+        return am==null ?"":am.getString();
     }
 
     private String blankIfNull(String s) {
@@ -178,7 +178,7 @@ public class Args {
     }
 
     private void parseStringSchemaElement(char elementId) {
-        stringArgs.put(elementId, "");
+        stringArgs.put(elementId, new ArgumentMarshaler());
     }
 
     private boolean isBooleanSchemaElement(String elementTail) {
@@ -206,13 +206,22 @@ public class Args {
 
     class ArgumentMarshaler {
         private boolean booleanValue = false;
+        private String stringValue ="";
 
         public void setBoolean(boolean value) {
             booleanValue = value;
         }
 
+        public void setString(String value){
+            stringValue = value;
+        }
+
         public boolean getBoolean() {
             return booleanValue;
+        }
+
+        public String getString(){
+            return stringValue ==null?"":stringValue;
         }
     }
 
