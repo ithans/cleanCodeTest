@@ -145,7 +145,7 @@ public class Args {
         return b == null ? false : b;
     }
 
-    private String getString(char arg){
+    public String getString(char arg){
         return blankIfNull(stringArgs.get(arg));
     }
 

@@ -14,9 +14,9 @@ public class Main {
     }
 
     private static void executeApplication(boolean logging,int port,String directory) {
-        System.out.println(logging);
-        System.out.println(port);
-        System.out.println(directory);
+        System.out.println(logging+"**");
+        System.out.println(port+"**");
+        System.out.println(directory+"**");
     }
 
 }
