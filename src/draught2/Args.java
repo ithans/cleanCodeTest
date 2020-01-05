@@ -98,7 +98,7 @@ public class Args {
     }
 
     private void setBooleanArg(char argChar, boolean value) {
-        booleanArgs.get(argChar).setBoolean(value);
+        booleanArgs.get(argChar).set("true");
     }
 
     private void setIntArg(char argChar) {
@@ -158,7 +158,7 @@ public class Args {
 
     public boolean getBoolean(char arg) {
         Args.ArgumentMarshaler am = booleanArgs.get(arg);
-        return am != null && am.getBoolean();
+        return am != null && (Boolean)am.get();
     }
 
     public String getString(char arg) {
@@ -195,7 +195,7 @@ public class Args {
     }
 
     private void parseStringSchemaElement(char elementId) {
-        stringArgs.put(elementId, new ArgumentMarshaler());
+        stringArgs.put(elementId, new StringArgumentMarshaler());
     }
 
     private boolean isBooleanSchemaElement(String elementTail) {
@@ -225,8 +225,8 @@ public class Args {
     }
 
 
-    class ArgumentMarshaler {
-        private boolean booleanValue = false;
+    abstract class  ArgumentMarshaler {
+        protected boolean booleanValue = false;
         private String stringValue = "";
         private int intValue;
 
@@ -254,18 +254,45 @@ public class Args {
             return intValue;
         }
 
+        public abstract void set(String s);
+
+        public abstract Object get();
     }
 
     class BooleanArgumentMarshaler extends ArgumentMarshaler {
+        @Override
+        public void set(String s) {
+            booleanValue =true;
+        }
 
+        @Override
+        public Object get() {
+            return booleanValue;
+        }
     }
 
     class StringArgumentMarshaler extends ArgumentMarshaler {
+        @Override
+        public void set(String s) {
 
+        }
+
+        @Override
+        public Object get() {
+            return null;
+        }
     }
 
     class IntegerArgumentMarshaler extends ArgumentMarshaler {
+        @Override
+        public void set(String s) {
 
+        }
+
+        @Override
+        public Object get() {
+            return null;
+        }
     }
 
 
