@@ -230,18 +230,7 @@ public class Args {
 
 
     abstract class  ArgumentMarshaler {
-        protected int intValue;
-
-        public void setInteger(int i) {
-            intValue = i;
-        }
-
-        public int getInteger() {
-            return intValue;
-        }
-
         public abstract void set(String s);
-
         public abstract Object get();
     }
 
@@ -274,6 +263,8 @@ public class Args {
     }
 
     class IntegerArgumentMarshaler extends ArgumentMarshaler {
+        private int intValue;
+
         @Override
         public void set(String s) {
             intValue =Integer.parseInt(s);
