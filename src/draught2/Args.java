@@ -1,6 +1,5 @@
 package draught2;
 
-import clean.args.ArgsException;
 
 import java.text.ParseException;
 import java.util.HashMap;
@@ -17,8 +16,8 @@ public class Args {
     private Set<Character> unexpectedArguments = new TreeSet<>();
     private Map<Character, ArgumentMarshaler> booleanArgs = new HashMap<>();
     private Map<Character, ArgumentMarshaler> stringArgs = new HashMap<>();
+    private Map<Character, ArgumentMarshaler> intArgs = new HashMap<>();
     private Set<Character> argFound = new HashSet<>();
-    private int numOfArgument;
     private int currentArgument;
     private char errorArguement = '\0';
     private ErrorCode errorCode = ErrorCode.OK;
@@ -102,6 +101,24 @@ public class Args {
         booleanArgs.get(argChar).setBoolean(value);
     }
 
+    private void setIntArg(char argChar) {
+        currentArgument++;
+        String paramter = null;
+        try {
+            paramter = args[currentArgument];
+            intArgs.get(argChar).setInteger(Integer.parseInt(paramter));
+        } catch (ArrayIndexOutOfBoundsException e) {
+            valid = false;
+        } catch (NumberFormatException e) {
+            valid = false;
+        }
+    }
+
+    public int getInt(char arg) {
+        Args.ArgumentMarshaler am = intArgs.get(arg);
+        return am == null ? 0 : am.getInteger();
+    }
+
     private boolean isBoolean(char argChar) {
         return booleanArgs.containsKey(argChar);
     }
@@ -146,7 +163,7 @@ public class Args {
 
     public String getString(char arg) {
         Args.ArgumentMarshaler am = stringArgs.get(arg);
-        return am==null ?"":am.getString();
+        return am == null ? "" : am.getString();
     }
 
     private String blankIfNull(String s) {
@@ -195,6 +212,10 @@ public class Args {
         booleanArgs.put(element, new BooleanArgumentMarshaler());
     }
 
+    private void parseIntegerSchemaElement(char element) {
+        intArgs.put(element, new IntegerArgumentMarshaler());
+    }
+
     public boolean has(char arg) {
         return argFound.contains(arg);
     }
@@ -206,23 +227,33 @@ public class Args {
 
     class ArgumentMarshaler {
         private boolean booleanValue = false;
-        private String stringValue ="";
+        private String stringValue = "";
+        private int intValue;
 
         public void setBoolean(boolean value) {
             booleanValue = value;
         }
 
-        public void setString(String value){
+        public void setString(String value) {
             stringValue = value;
+        }
+
+        public void setInteger(int i) {
+            intValue = i;
         }
 
         public boolean getBoolean() {
             return booleanValue;
         }
 
-        public String getString(){
-            return stringValue ==null?"":stringValue;
+        public String getString() {
+            return stringValue == null ? "" : stringValue;
         }
+
+        public int getInteger() {
+            return intValue;
+        }
+
     }
 
     class BooleanArgumentMarshaler extends ArgumentMarshaler {
