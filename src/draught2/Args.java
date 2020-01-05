@@ -85,7 +85,7 @@ public class Args {
     private void setStringArg(char argChar, String s) {
         currentArgument++;
         try {
-            stringArgs.get(argChar).setString(args[currentArgument]);
+            stringArgs.get(argChar).set(args[currentArgument]);
         } catch (ArrayIndexOutOfBoundsException e) {
             valid = false;
             errorArguement = argChar;
@@ -106,7 +106,7 @@ public class Args {
         String paramter = null;
         try {
             paramter = args[currentArgument];
-            intArgs.get(argChar).setInteger(Integer.parseInt(paramter));
+            intArgs.get(argChar).set(paramter);
         } catch (ArrayIndexOutOfBoundsException e) {
             valid = false;
         } catch (NumberFormatException e) {
@@ -116,7 +116,7 @@ public class Args {
 
     public int getInt(char arg) {
         Args.ArgumentMarshaler am = intArgs.get(arg);
-        return am == null ? 0 : am.getInteger();
+        return am == null ? 0 : (Integer) am.get();
     }
 
     private boolean isBoolean(char argChar) {
@@ -163,7 +163,11 @@ public class Args {
 
     public String getString(char arg) {
         Args.ArgumentMarshaler am = stringArgs.get(arg);
-        return am == null ? "" : am.getString();
+        return am == null ? "" : (String)am.get();
+    }
+
+    private boolean isIntArg(char argChar){
+        return intArgs.containsKey(argChar);
     }
 
     private String blankIfNull(String s) {
@@ -226,19 +230,10 @@ public class Args {
 
 
     abstract class  ArgumentMarshaler {
-        private String stringValue = "";
-        private int intValue;
-
-        public void setString(String value) {
-            stringValue = value;
-        }
+        protected int intValue;
 
         public void setInteger(int i) {
             intValue = i;
-        }
-
-        public String getString() {
-            return stringValue == null ? "" : stringValue;
         }
 
         public int getInteger() {
@@ -265,26 +260,28 @@ public class Args {
     }
 
     class StringArgumentMarshaler extends ArgumentMarshaler {
+        private String stringValue = "";
+
         @Override
         public void set(String s) {
-
+            stringValue = s;
         }
 
         @Override
         public Object get() {
-            return null;
+            return stringValue;
         }
     }
 
     class IntegerArgumentMarshaler extends ArgumentMarshaler {
         @Override
         public void set(String s) {
-
+            intValue =Integer.parseInt(s);
         }
 
         @Override
         public Object get() {
-            return null;
+            return intValue;
         }
     }
 
