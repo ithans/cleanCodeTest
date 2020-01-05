@@ -26,7 +26,7 @@ public class Args {
     private List<String> argsList;
 
     enum ErrorCode {
-        OK, MISSING_STRING, MISS_INTEGER, INVALID_INTEGER, UNEXPECTED_ARGUMENT
+        OK, MISSING_STRING, MISS_INTEGER, INVALID_INTEGER, UNEXPECTED_ARGUMENT,MISSING_DOUBLE, INVALID_DOUBLE;
     }
 
     public Args(String schema, String[] args) throws ParseException {
@@ -62,12 +62,14 @@ public class Args {
         char elementId = element.charAt(0);
         String elementTail = element.substring(1);
         validateSchemaElementId(elementId);
-        if (isBooleanSchemaElement(elementTail))
+        if (elementTail.length()==0)
             marshaler.put(elementId, new BooleanArgumentMarshaler());
-        else if (isStringSchemaElementId(elementTail))
+        else if (elementTail.equals("*"))
             marshaler.put(elementId, new StringArgumentMarshaler());
-        else if (isIntSchemaElementId(elementTail))
+        else if (elementTail.equals("#"))
             marshaler.put(elementId, new IntegerArgumentMarshaler());
+        else if (elementTail.equals("##"))
+            marshaler.put(elementId,new DoubleArgument());
         else {
             throw new ParseException(String.format("Argument: %c has invalid format: %s", elementId, elementTail), 0);
         }
@@ -77,18 +79,6 @@ public class Args {
         if (!Character.isLetter(elementId)) {
             throw new ParseException("Bad charcter:" + elementId + "in Args format:" + schema, 0);
         }
-    }
-
-    private boolean isIntSchemaElementId(String elementTail) {
-        return elementTail.equals("#");
-    }
-
-    private boolean isStringSchemaElementId(String elementTail) {
-        return elementTail.equals("*");
-    }
-
-    private boolean isBooleanSchemaElement(String elementTail) {
-        return elementTail.length() == 0;
     }
 
     private boolean parseArguments() throws ArgsException {
@@ -201,6 +191,15 @@ public class Args {
         }
     }
 
+    public double getDouble(char arg){
+        Args.ArgumentMarshaler am = marshaler.get(arg);
+        try{
+            return am ==null? 0:(Double)am.get();
+        }catch (Exception e){
+            return 0.0;
+        }
+    }
+
     public boolean has(char arg) {
         return argFound.contains(arg);
     }
@@ -215,9 +214,9 @@ public class Args {
 
      interface ArgumentMarshaler {
 
-        public abstract void set(Iterator<String> currentArgument) throws ArgsException;
+        void set(Iterator<String> currentArgument) throws ArgsException;
 
-        public abstract Object get();
+        Object get();
     }
 
     class BooleanArgumentMarshaler implements ArgumentMarshaler {
@@ -275,6 +274,30 @@ public class Args {
         @Override
         public Object get() {
             return intValue;
+        }
+    }
+
+    private class DoubleArgument implements ArgumentMarshaler {
+        private double doubleValue =0;
+        @Override
+        public void set(Iterator<String> currentArgument) throws ArgsException {
+            String paramter = null;
+            try {
+                paramter = currentArgument.next();
+                doubleValue = Double.parseDouble(paramter);
+            }catch (NoSuchElementException e){
+                errorCode =ErrorCode.MISSING_DOUBLE;
+                throw new ArgsException();
+            }catch (NumberFormatException e){
+                errorParamter = paramter;
+                errorCode = ErrorCode.INVALID_DOUBLE;
+                throw new ArgsException();
+            }
+        }
+
+        @Override
+        public Object get() {
+            return doubleValue;
         }
     }
 }
