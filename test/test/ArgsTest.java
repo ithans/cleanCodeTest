@@ -1,16 +1,35 @@
 package test;
 
-import draught2.Args;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import java.text.ParseException;
+
+import static org.junit.jupiter.api.Assertions.*;
+
 class ArgsTest {
+
     @Test
-    void testSimpleDoublePresent() throws Exception {
-        Args args = new Args("x##", new String[]{"-x", "42.3"});
-        Assertions.assertTrue(args.isValid());
-        Assertions.assertEquals(1,args.cardinality());
-        Assertions.assertTrue(args.has('x'));
-        Assertions.assertEquals(42.3,args.getDouble('x'),0.001);
+    void testInvalidBoolean() throws Exception {
+        Args args = new Args("l", new String[]{"-l"});
+        assertTrue(args.isValid());
+        assertTrue(args.getBoolean('l'));
+        assertEquals(1, args.cardinality());
+    }
+
+    @Test
+    void testInvalidString() throws Exception {
+        Args args = new Args("d*", new String[]{"-d", "qwqr"});
+        assertTrue(args.isValid());
+        assertEquals("qwqr", args.getString('d'));
+        assertEquals(1, args.cardinality());
+    }
+
+    @Test
+    void testInvalidBooleanAndString() throws Exception {
+        Args args = new Args("l,d*",new String[]{"-l","-d","qwqr"});
+        assertTrue(args.isValid());
+        assertTrue(args.getBoolean('l'));
+        assertEquals("qwqr", args.getString('d'));
+        assertEquals(2, args.cardinality());
     }
 }
