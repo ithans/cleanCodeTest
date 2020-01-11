@@ -11,7 +11,7 @@ public class Args {
     private String schema;
     private String[] args;
     private boolean valid = true;
-    private Set<Character> unexpectedArguement = new TreeSet<>();
+    private Set<Character> unexpectedArgument = new TreeSet<>();
     private Map<Character, Boolean> booleanArgs = new HashMap<>();
     private Map<Character, String> stringArgs = new HashMap<>();
     private Set<Character> argsFound = new HashSet<>();
@@ -35,19 +35,19 @@ public class Args {
             return true;
         }
         parseSchema();
-        parseArguements();
+        parseArguments();
         return valid;
     }
 
-    private boolean parseArguements() {
+    private boolean parseArguments() {
         for (currentArgument = 0; currentArgument < args.length; currentArgument++) {
             String arg = args[currentArgument];
-            parseArguement(arg);
+            parseArgument(arg);
         }
         return true;
     }
 
-    private void parseArguement(String arg) {
+    private void parseArgument(String arg) {
         if (arg.startsWith("-")) {
             parseElements(arg);
         }
@@ -63,7 +63,7 @@ public class Args {
         if (setArgument(argChar)) {
             argsFound.add(argChar);
         } else {
-            unexpectedArguement.add(argChar);
+            unexpectedArgument.add(argChar);
             valid = false;
         }
     }
@@ -116,8 +116,8 @@ public class Args {
     }
 
     public String errorMessage() throws Exception {
-        if (unexpectedArguement.size() > 0) {
-            return unexpectedArguementMessage();
+        if (unexpectedArgument.size() > 0) {
+            return unexpectedArgumentMessage();
         } else {
             switch (errorCode) {
                 case MISSING_STRING:
@@ -129,9 +129,9 @@ public class Args {
         return "";
     }
 
-    private String unexpectedArguementMessage() {
+    private String unexpectedArgumentMessage() {
         StringBuffer message = new StringBuffer();
-        for (char c : unexpectedArguement) {
+        for (char c : unexpectedArgument) {
             message.append(c);
         }
         message.append(" unexpected.");
@@ -197,11 +197,11 @@ public class Args {
         return s == null ? "" : s;
     }
 
-    public boolean has(char arg){
+    public boolean has(char arg) {
         return argsFound.contains(arg);
     }
 
-    public boolean isValid(){
+    public boolean isValid() {
         return valid;
     }
 }
